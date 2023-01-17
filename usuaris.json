@@ -1,0 +1,32 @@
+{
+    "1":{
+    "firstname":"Antoni",
+    "lastname":"Nicolau Seguí",
+    "email":"anicolau@iesmanacor.cat",
+    "groups":"admins"
+    },
+    "2":{
+        "firstname":"Christian",
+        "lastname":"García Oliver",
+        "email":"",
+        "groups":"users"
+        },
+    "3":{
+        "firstname":"Sofía",
+        "lastname":"Alejandro Sousa",
+        "email":"",
+        "groups":"users"
+        },
+    "4":{
+        "firstname":"Sergi",
+        "lastname":"Escura Bassa",
+        "email":"",
+        "groups":"users"
+        },
+    "5":{
+        "firstname":"Xavier",
+        "lastname":"Estades Novo",
+        "email":"",
+        "groups":"users"
+        }
+}
