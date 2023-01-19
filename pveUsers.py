@@ -5,6 +5,7 @@ import csv
 import subprocess
 import sys
 from unidecode import unidecode
+from datetime import datetime
 
 class WrongFileType(Exception):
     pass
@@ -36,6 +37,20 @@ def createUserPass(fname, surnames):
     pasw = surnames[0] + fname[0]
     return user, pasw
 
+# returns the number of seconds since the epoch from the date
+def dateToSeconds(dateStr):
+    try:
+        # converts string to date object
+        date = datetime.strptime(dateStr, "%y/%m/%d")
+        # returns seconds since epoch
+        return int(datetime.timestamp(date))
+    except ValueError:
+        raise ValueError("Wrong format for date. It should be yy/mm/dd")
+    except:
+        raise
+
+
+
 def processJson(filename):
     # reads the JSON file
     batch = dict()
@@ -47,7 +62,7 @@ def processJson(filename):
         for user in batch.values():
             if ("firstname" not in user or "lastname" not in user
                 or user["firstname"] == "" or user["lastname"] == ""):
-                raise ValueError
+                raise ValueError("One or more users do not have a first- or lastname. Please check.")
     except: # handled in one place
         raise
 
@@ -67,12 +82,21 @@ def processJson(filename):
         if "email" in user and user["email"] != "":
             command.append("--email")
             command.append(user["email"])
+        if ("expire" in user and  user["expire"] != ""):
+            try:
+                command.append("--expire")
+                command.append(str(dateToSeconds(user["expire"])))
+            except ValueError as e:
+                print("ERROR: User {} {}: "
+                     .format(user["firstname"], user["lastname"])
+                     + e.args[0])
+                continue
         if ("groups" in user and  user["groups"] != ""):
             command.append("--groups")
             command.append(user["groups"])
         else:
             print("WARNING: user {} {} has no group(s) assigned"
-                .format(user["firstname"], user["lastname"]))  
+                .format(user["firstname"], user["lastname"]))
         # subprocess.call(command)
         print(" ".join(command))
 
@@ -86,7 +110,7 @@ def processCsv(filename):
         # (necessary for setting def. username and password)
         for user in users:
             if user[0] == "" or user[1] == "":
-                raise ValueError
+                raise ValueError("One or more users do not have a first- or lastname. Please check.")
     except: # handled in one place
         raise
 
@@ -106,9 +130,17 @@ def processCsv(filename):
         if user[2] != "":
             command.append("--email")
             command.append(user[2])
-        if user[3] != "":
+        if (user[3] != ""):
+            try:
+                command.append("--expire")
+                command.append(str(dateToSeconds(user[3])))
+            except ValueError as e:
+                print("ERROR: User {} {}: ".format(user[0], user[1])
+                     + e.args[0])
+                continue
+        if user[4] != "":
             command.append("--groups")
-            command.append(user[3])
+            command.append(user[4])
         else:
             print("WARNING: user {} {} has no group(s) assigned"
                 .format(user[0], user[1]))
@@ -117,9 +149,9 @@ def processCsv(filename):
 try:
     main()
 except IndexError as e:
-    print(e.args[0])
+    print("ERROR: " + e.args[0])
 except WrongFileType as e:
-    print(e.args[0])
+    print("ERROR: " + e.args[0])
 except ValueError:
     print("ERROR: One or more users do not have a first- or lastname. Please check.")
 except FileNotFoundError:
@@ -130,7 +162,7 @@ except json.decoder.JSONDecodeError:
     print("ERROR: The file does not contain valid JSON data")
 except UnicodeDecodeError:
     print("ERROR: The file contains non-UTF-8 characters")
-# except TypeError as e:
-#     print(e.args[0])
+except TypeError as e:
+    print("ERROR: " + e.args[0])
 except csv.Error:
     print("ERROR: An error occurred while reading the file")
