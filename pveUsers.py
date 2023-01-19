@@ -97,8 +97,8 @@ def processJson(filename):
         else:
             print("WARNING: user {} {} has no group(s) assigned"
                 .format(user["firstname"], user["lastname"]))
-        # subprocess.call(command)
-        print(" ".join(command))
+        subprocess.call(command)
+        # print(" ".join(command))
 
 def processCsv(filename):
     # reads the CSV file
@@ -144,8 +144,8 @@ def processCsv(filename):
         else:
             print("WARNING: user {} {} has no group(s) assigned"
                 .format(user[0], user[1]))
-        # subprocess.call(command)
-        print(" ".join(command))
+        subprocess.call(command)
+        # print(" ".join(command))
 try:
     main()
 except IndexError as e:
