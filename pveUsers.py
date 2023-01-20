@@ -87,7 +87,7 @@ def processJson(filename):
                 command.append("--expire")
                 command.append(str(dateToSeconds(user["expire"])))
             except ValueError as e:
-                print("ERROR: User {} {}: "
+                sys.stderr.write("ERROR: User {} {}: "
                      .format(user["firstname"], user["lastname"])
                      + e.args[0])
                 continue
@@ -135,7 +135,7 @@ def processCsv(filename):
                 command.append("--expire")
                 command.append(str(dateToSeconds(user[3])))
             except ValueError as e:
-                print("ERROR: User {} {}: ".format(user[0], user[1])
+                sys.stderr.write("ERROR: User {} {}: ".format(user[0], user[1])
                      + e.args[0])
                 continue
         if user[4] != "":
@@ -149,20 +149,20 @@ def processCsv(filename):
 try:
     main()
 except IndexError as e:
-    print("ERROR: " + e.args[0])
+    sys.stderr.write("ERROR: " + e.args[0])
 except WrongFileType as e:
-    print("ERROR: " + e.args[0])
+    sys.stderr.write("ERROR: " + e.args[0])
 except ValueError:
-    print("ERROR: One or more users do not have a first- or lastname. Please check.")
+    sys.stderr.write("ERROR: One or more users do not have a first- or lastname. Please check.")
 except FileNotFoundError:
-    print("ERROR: The specified file was not found")
+    sys.stderr.write("ERROR: The specified file was not found")
 except PermissionError:
-    print("ERROR: You do not have permission to access the file")
+    sys.stderr.write("ERROR: You do not have permission to access the file")
 except json.decoder.JSONDecodeError:
-    print("ERROR: The file does not contain valid JSON data")
+    sys.stderr.write("ERROR: The file does not contain valid JSON data")
 except UnicodeDecodeError:
-    print("ERROR: The file contains non-UTF-8 characters")
+    sys.stderr.write("ERROR: The file contains non-UTF-8 characters")
 except TypeError as e:
-    print("ERROR: " + e.args[0])
+    sys.stderr.write("ERROR: " + e.args[0])
 except csv.Error:
-    print("ERROR: An error occurred while reading the file")
+    sys.stderr.write("ERROR: An error occurred while reading the file")
